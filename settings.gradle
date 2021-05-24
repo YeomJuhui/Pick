@@ -1,0 +1,3 @@
+rootProject.name = "Pick"
+include ':app'
+include ':sdk'
