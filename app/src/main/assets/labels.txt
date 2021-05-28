@@ -1,0 +1,4 @@
+car
+tree
+flower
+sea
