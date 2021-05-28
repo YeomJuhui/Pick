@@ -244,7 +244,7 @@ public class Angle extends AppCompatActivity
         mMessageListview.setAdapter(mConversationArrayAdapter);
 
 //        new Thread(new ConnectThread("192.168.43.26", 9898)).start();
-        new Thread(new ConnectThread("172.20.10.2", 9898)).start();
+        new Thread(new ConnectThread("192.168.112.15", 2424)).start();
     }
 
     @Override

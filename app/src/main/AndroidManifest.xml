@@ -33,9 +33,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pick">
-        <activity android:name=".BackImage"
-            android:screenOrientation="landscape"
-            android:configChanges="keyboardHidden|orientation">></activity>
+        <activity android:name=".MainActivity3"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".BackImage"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="landscape">
+        </activity>
         <activity
             android:name=".MailPage"
             android:configChanges="keyboardHidden|orientation"
@@ -67,7 +72,7 @@
         <activity
             android:name=".StartPage"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mMessageListview.setAdapter(mConversationArrayAdapter);
 
 
-        new Thread(new ConnectThread("172.20.10.2", 9898)).start();
+        new Thread(new ConnectThread("192.168.112.15", 2424)).start();
     }
 
     @Override
@@ -481,204 +481,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(((currentTimeMillis - mStartTime) > (10.5 * 1000)) && ((currentTimeMillis - mStartTime) < (10.7 * 1000))){
-                        try {
-                            getWriteLock();
-
-                            File tempDir = getFilesDir();
-                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
-
-                            File file = new File(tempDir, timeStamp + "image.jpg");
-                            mCurrentPhotoPath = file.getAbsolutePath();
-
-                            String filename = file.toString();
-
-                            Imgproc.cvtColor(matResult, matResult, Imgproc.COLOR_BGR2RGBA);
-                            boolean ret = Imgcodecs.imwrite(filename, matResult);
-                            if (ret) Log.d(TAG, "SUCESS");
-                            else Log.d(TAG, "FAIL");
-
-                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                            mediaScanIntent.setData(Uri.fromFile(file));
-                            sendBroadcast(mediaScanIntent);
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        releaseWriteLock();
-                    }
-                    if(((currentTimeMillis - mStartTime) > (20.5 * 1000)) && ((currentTimeMillis - mStartTime) < (20.7 * 1000))){
-                        try {
-                            getWriteLock();
-
-                            File tempDir = getFilesDir();
-                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
-
-                            File file = new File(tempDir, timeStamp + "image.jpg");
-                            mCurrentPhotoPath = file.getAbsolutePath();
-
-                            String filename = file.toString();
-
-                            Imgproc.cvtColor(matResult, matResult, Imgproc.COLOR_BGR2RGBA);
-                            boolean ret = Imgcodecs.imwrite(filename, matResult);
-                            if (ret) Log.d(TAG, "SUCESS");
-                            else Log.d(TAG, "FAIL");
-
-                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                            mediaScanIntent.setData(Uri.fromFile(file));
-                            sendBroadcast(mediaScanIntent);
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        releaseWriteLock();
-                    }
-                    if((currentTimeMillis-mStartTime)>(30.5*1000) && ((currentTimeMillis - mStartTime) < (30.7 * 1000))){
-                        try {
-                            getWriteLock();
-
-                            File tempDir = getFilesDir();
-                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
-
-                            File file = new File(tempDir, timeStamp + "image.jpg");
-                            mCurrentPhotoPath = file.getAbsolutePath();
-
-                            String filename = file.toString();
-
-                            Imgproc.cvtColor(matResult, matResult, Imgproc.COLOR_BGR2RGBA);
-                            boolean ret = Imgcodecs.imwrite(filename, matResult);
-                            if (ret) Log.d(TAG, "SUCESS");
-                            else Log.d(TAG, "FAIL");
-
-                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                            mediaScanIntent.setData(Uri.fromFile(file));
-                            sendBroadcast(mediaScanIntent);
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        releaseWriteLock();
-                    }
-                    if((currentTimeMillis-mStartTime)>(40.5*1000)&& ((currentTimeMillis - mStartTime) < (40.7 * 1000))){
-                        try {
-                            getWriteLock();
-
-                            File tempDir = getFilesDir();
-                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
-
-                            File file = new File(tempDir, timeStamp + "image.jpg");
-                            mCurrentPhotoPath = file.getAbsolutePath();
-
-                            String filename = file.toString();
-
-                            Imgproc.cvtColor(matResult, matResult, Imgproc.COLOR_BGR2RGBA);
-                            boolean ret = Imgcodecs.imwrite(filename, matResult);
-                            if (ret) Log.d(TAG, "SUCESS");
-                            else Log.d(TAG, "FAIL");
-
-                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                            mediaScanIntent.setData(Uri.fromFile(file));
-                            sendBroadcast(mediaScanIntent);
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        releaseWriteLock();
-                    }
-                    if((currentTimeMillis-mStartTime)>(50.5*1000)&& ((currentTimeMillis - mStartTime) < (50.7 * 1000))){
-                        try {
-                            getWriteLock();
-
-                            File tempDir = getFilesDir();
-                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
-
-                            File file = new File(tempDir, timeStamp + "image.jpg");
-                            mCurrentPhotoPath = file.getAbsolutePath();
-
-                            String filename = file.toString();
-
-                            Imgproc.cvtColor(matResult, matResult, Imgproc.COLOR_BGR2RGBA);
-                            boolean ret = Imgcodecs.imwrite(filename, matResult);
-                            if (ret) Log.d(TAG, "SUCESS");
-                            else Log.d(TAG, "FAIL");
-
-                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                            mediaScanIntent.setData(Uri.fromFile(file));
-                            sendBroadcast(mediaScanIntent);
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        releaseWriteLock();
-                    }
-                    if((currentTimeMillis-mStartTime)>(60.5*1000)&& ((currentTimeMillis - mStartTime) < (60.7 * 1000))){
-                        try {
-                            getWriteLock();
-
-                            File tempDir = getFilesDir();
-                            String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                            String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
-
-                            File file = new File(tempDir, timeStamp + "image.jpg");
-                            mCurrentPhotoPath = file.getAbsolutePath();
-
-                            String filename = file.toString();
-
-                            Imgproc.cvtColor(matResult, matResult, Imgproc.COLOR_BGR2RGBA);
-                            boolean ret = Imgcodecs.imwrite(filename, matResult);
-                            if (ret) Log.d(TAG, "SUCESS");
-                            else Log.d(TAG, "FAIL");
-
-                            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                            mediaScanIntent.setData(Uri.fromFile(file));
-                            sendBroadcast(mediaScanIntent);
-
-                            Intent i=new Intent(MainActivity.this, MainActivity2.class);
-                            startActivity(i);
-
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        releaseWriteLock();
-                    }
-
-                    /*if(recvMessage=="찰칵") {
-                        timer.setText("The picture will be taken soon, so don't move.");
-
-                                    try {
-                                        getWriteLock();
-
-                                        File tempDir = getFilesDir();
-                                        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                                        String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
-
-                                        File file = new File(tempDir, timeStamp + "image.jpg");
-                                        mCurrentPhotoPath = file.getAbsolutePath();
-
-                                        String filename = file.toString();
-
-                                        Imgproc.cvtColor(matResult, matResult, Imgproc.COLOR_BGR2RGBA);
-                                        boolean ret = Imgcodecs.imwrite(filename, matResult);
-                                        if (ret) Log.d(TAG, "SUCESS");
-                                        else Log.d(TAG, "FAIL");
-
-                                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                                        mediaScanIntent.setData(Uri.fromFile(file));
-                                        sendBroadcast(mediaScanIntent);
-
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    releaseWriteLock();
-
-                    }
                     if(ret!=0){
-
                         timer.setText("The picture will be taken soon, so don't move.");
                         if(currentTimeMillis-mStartTime>10*1000){
                             try {
@@ -688,7 +491,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                                 String timeStamp = new SimpleDateFormat("yyyyMMdd").format(new Date());
                                 String imageFileName = "Capture_" + timeStamp + "_"; //ex) Capture_20201206_
 
-                                File file = new File(tempDir, "image22.jpg");
+                                File file = new File(tempDir, "image.jpg");
                                 mCurrentPhotoPath = file.getAbsolutePath();
 
                                 String filename = file.toString();
@@ -713,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     }
                     else{
                         timer.setText("Show your face to the camera.");
-                    }*/
+                    }
                 }
             });
         } catch (InterruptedException e) {

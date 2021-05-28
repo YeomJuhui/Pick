@@ -1,21 +1,16 @@
 package com.example.pick;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -27,6 +22,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.wonderkiln.camerakit.CameraKitError;
+import com.wonderkiln.camerakit.CameraKitEvent;
+import com.wonderkiln.camerakit.CameraKitEventListener;
+import com.wonderkiln.camerakit.CameraKitImage;
+import com.wonderkiln.camerakit.CameraKitVideo;
+import com.wonderkiln.camerakit.CameraView;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -40,7 +45,6 @@ import org.opencv.imgproc.Imgproc;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +59,8 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
 import static android.Manifest.permission.CAMERA;
@@ -64,12 +70,27 @@ public class BackImage extends AppCompatActivity implements CameraBridgeViewBase
 
     private static final String TAG = "backimage";
 
+    private static final String MODEL_PATH = "colab.tflite";
+    private static final boolean QUANT = false;
+    private static final String LABEL_PATH = "labels.txt";
+    private static final int INPUT_SIZE = 64;
+
+    private Classifier classifier;
+
+    private Executor executor = Executors.newSingleThreadExecutor();
+    private TextView textViewResult;
+    private ImageView imageViewResult;
+    private CameraView cameraView;
+
     private Mat matInput;
     private Mat matResult;
 
     private String recvMessage;
     private ImageView imageBack;
     private String mCurrentPhotoPath;
+
+    private Button button;
+
     private int count=0;
     private long mStartTime=0;
 
@@ -187,6 +208,12 @@ public class BackImage extends AppCompatActivity implements CameraBridgeViewBase
 
         imageBack=findViewById(R.id.imageBack);
 
+        cameraView = findViewById(R.id.cameraView);
+
+        imageViewResult = findViewById(R.id.imageViewResult);
+        textViewResult = findViewById(R.id.textViewResult);
+        textViewResult.setMovementMethod(new ScrollingMovementMethod());
+
         mOpenCvCameraView = (CameraBridgeViewBase)findViewById(R.id.activity_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
@@ -196,31 +223,58 @@ public class BackImage extends AppCompatActivity implements CameraBridgeViewBase
         recvMessage = sendDate.getStringExtra("recvMessage");
         Log.d(TAG2, "recv message: "+recvMessage);
 
-        Button button = (Button)findViewById(R.id.button3);
-        button.setOnClickListener(new View.OnClickListener() {
+        cameraView.addCameraKitListener(new CameraKitEventListener() {
+            @Override
+            public void onEvent(CameraKitEvent cameraKitEvent) {
+
+            }
+
+            @Override
+            public void onError(CameraKitError cameraKitError) {
+
+            }
+
+            @Override
+            public void onImage(CameraKitImage cameraKitImage) {
+                Bitmap bitmap = cameraKitImage.getBitmap();
+
+                bitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, false);
+
+                imageViewResult.setImageBitmap(bitmap);
+
+                final List<Classifier.Recognition> results = classifier.recognizeImage(bitmap);
+
+                textViewResult.setText(results.toString());
+            }
+
+            @Override
+            public void onVideo(CameraKitVideo cameraKitVideo) {
+
+            }
+        });
+
+            button = (Button)findViewById(R.id.button3);
+            button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mInputEditText.setText("3");
-                String sendMessage = mInputEditText.getText().toString();
-                if ( sendMessage.length() > 0 ) {
-                    if (!isConnected) showErrorDialog("Connect to the server and try again.");
-                    else {
-                        new Thread(new SenderThread(sendMessage)).start();
-                        mInputEditText.setText(" ");
-                    }
-                }
+                cameraView.captureImage();
             }
         });
 
         mConversationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         mMessageListview.setAdapter(mConversationArrayAdapter);
 
-        new Thread(new ConnectThread("172.20.10.2", 9898)).start();
+        new Thread(new ConnectThread("192.168.112.15", 2424)).start();
+
+        initTensorFlowAndLoadModel();
     }
 
     @Override
     public void onPause()
     {
         super.onPause();
+
+        cameraView.stop();
+
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
@@ -229,6 +283,8 @@ public class BackImage extends AppCompatActivity implements CameraBridgeViewBase
     public void onResume()
     {
         super.onResume();
+
+        cameraView.start();
 
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "onResume :: Internal OpenCV library not found.");
@@ -246,6 +302,13 @@ public class BackImage extends AppCompatActivity implements CameraBridgeViewBase
 
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                classifier.close();
+            }
+        });
     }
 
     private static long back_pressed;
@@ -692,4 +755,33 @@ public class BackImage extends AppCompatActivity implements CameraBridgeViewBase
         });
         builder.create().show();
     }
+
+    private void initTensorFlowAndLoadModel() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    classifier = TensorFlowImageClassifier.create(
+                            getAssets(),
+                            MODEL_PATH,
+                            LABEL_PATH,
+                            INPUT_SIZE,
+                            QUANT);
+                    makeButtonVisible();
+                } catch (final Exception e) {
+                    throw new RuntimeException("Error initializing TensorFlow!", e);
+                }
+            }
+        });
+    }
+
+    private void makeButtonVisible() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                button.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
 }

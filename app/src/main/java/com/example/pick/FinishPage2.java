@@ -25,7 +25,6 @@ public class FinishPage2 extends AppCompatActivity {
         btn_finish2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//저장할 파일 경로
                 File tempDir = getFilesDir();
                 Log.d(TAG, "경로 : " + getFilesDir());
                 if (!tempDir.exists()) //폴더가 없으면 생성.

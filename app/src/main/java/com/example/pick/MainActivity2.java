@@ -29,6 +29,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.opencv.objdetect.BaseCascadeClassifier;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -98,7 +100,6 @@ public class MainActivity2 extends AppCompatActivity {
         });
 
         btn_back.setOnClickListener(v -> {
-
             mInputEditText.setText("3");
             String sendMessage = mInputEditText.getText().toString();
             if ( sendMessage.length() > 0 ) {
@@ -170,7 +171,7 @@ public class MainActivity2 extends AppCompatActivity {
         mConversationArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         mMessageListview.setAdapter(mConversationArrayAdapter);
 
-        new Thread(new ConnectThread("172.20.10.2", 9898)).start();
+        new Thread(new ConnectThread("192.168.112.15", 2424)).start();
     }
 
     @Override

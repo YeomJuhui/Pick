@@ -1,4 +1,5 @@
 #include <jni.h>
+
 #include <opencv2/opencv.hpp>
 #include <android/log.h>
 
@@ -32,12 +33,10 @@ Java_com_example_pick_MainActivity_loadCascade(JNIEnv *env, jobject thiz,
     jlong ret = 0;
     ret = (jlong) new CascadeClassifier(pathDir);
     if (((CascadeClassifier *) ret)->empty()) {
-        __android_log_print(ANDROID_LOG_DEBUG, "native-lib :: ",
-                            "CascadeClassifier로 로딩 실패  %s", nativeFileNameString);
+        __android_log_print(ANDROID_LOG_DEBUG, "native-lib :: ", "CascadeClassifier로 로딩 실패  %s", nativeFileNameString);
     }
     else
-        __android_log_print(ANDROID_LOG_DEBUG, "native-lib :: ",
-                            "CascadeClassifier로 로딩 성공 %s", nativeFileNameString);
+        __android_log_print(ANDROID_LOG_DEBUG, "native-lib :: ", "CascadeClassifier로 로딩 성공 %s", nativeFileNameString);
 
     env->ReleaseStringUTFChars(cascade_file_name, nativeFileNameString);
 
